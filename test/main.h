@@ -815,7 +815,7 @@ std::string type_name<std::complex<int> >(std::complex<int>) {
 }
 template <typename T>
 std::string type_name() {
-  return type_name(T);
+  return type_name(T());
 }
 
 using namespace Eigen;
