@@ -1286,8 +1286,8 @@ struct cast_test_impl {
           DstType dstVal = dst(i, j);
           bool isApprox = verifyIsApprox(dstVal, refVal);
           if (!isApprox)
-            std::cout << type_name(srcVal) << ": [" << +srcVal << "] to " << type_name(dstVal) << ": ["
-                      << +dstVal << "] != [" << +refVal << "]\n";
+            std::cout << type_name(srcVal) << ": [" << +srcVal << "] to " << type_name(dstVal) << ": [" << +dstVal
+                      << "] != [" << +refVal << "]\n";
           VERIFY(isApprox);
         }
     }
