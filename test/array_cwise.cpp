@@ -294,6 +294,7 @@ void float_pow_test_impl() {
             bool success = both_nan || (exact_or_approx && same_sign);
             all_pass &= success;
             if (!success) {
+              std::cout << "Base type: " << type_name(base) << ", Exponent type: " << type_name(exponent) << std::endl;
               std::cout << "pow(" << bases(j) << "," << exponent << ")   =   " << a << " !=  " << e << std::endl;
             }
           }
