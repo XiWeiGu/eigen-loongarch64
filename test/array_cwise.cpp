@@ -65,7 +65,7 @@ std::vector<Scalar> special_values() {
 template <typename Scalar>
 void special_value_pairs(Array<Scalar, Dynamic, Dynamic>& x, Array<Scalar, Dynamic, Dynamic>& y) {
   std::vector<Scalar> vals = special_values<Scalar>();
-  int num_cases = vals.size() * vals.size();
+  std::size_t num_cases = vals.size() * vals.size();
   // ensure both vectorized and non-vectorized paths taken
   const Index num_repeats = 2 * (Index)internal::packet_traits<Scalar>::size + 1;
   x.resize(num_repeats, num_cases);
