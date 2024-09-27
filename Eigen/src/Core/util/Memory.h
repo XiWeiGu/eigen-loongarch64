@@ -1250,6 +1250,145 @@ inline void queryCacheSizes_amd(int& l1, int& l2, int& l3) {
 }
 #endif
 
+#ifdef EIGEN_ARCH_LOONGARCH64
+#define LOONGARCH_CFG0      0x00
+#define LOONGARCH_CFG2      0x02
+#define LOONGARCH_CFG10     0x10
+#define LOONGARCH_CFG11     0x11
+#define LOONGARCH_CFG12     0x12
+#define LOONGARCH_CFG13     0x13
+#define LOONGARCH_CFG14     0x14
+#define CACHE_INFO_L1_IU    0
+#define CACHE_INFO_L1_D     1
+#define CACHE_INFO_L2_IU    2
+#define CACHE_INFO_L2_D     3
+#define CACHE_INFO_L3_IU    4
+#define CACHE_INFO_L3_D     5
+#define L1_IU_PRESENT_MASK  0x0001
+#define L1_IU_UNITY_MASK    0x0002
+#define L1_D_PRESENT_MASK   0x0004
+#define L2_IU_PRESENT_MASK  0x0008
+#define L2_IU_UNITY_MASK    0x0010
+#define L2_D_PRESENT_MASK   0x0080
+#define L3_IU_PRESENT_MASK  0x0400
+#define L3_IU_UNITY_MASK    0x0800
+#define L3_D_PRESENT_MASK   0x4000
+#define CACHE_WAY_MINUS_1_MASK      0x0000ffff
+#define CACHE_INDEX_LOG2_MASK       0x00ff0000
+#define CACHE_LINESIZE_LOG2_MASK    0x7f000000
+
+typedef struct {
+  int size;
+  int associative;
+  int linesize;
+  int unify;
+  int present;
+} cache_info_t;
+
+inline void get_cacheinfo(int type, int& size) {
+  cache_info_t cache_info;
+  memset(&cache_info, 0, sizeof(cache_info));
+  uint32_t reg_10 = 0;
+  __asm__ volatile (
+    "cpucfg %0, %1 \n\t"
+    : "+&r"(reg_10)
+    : "r"(LOONGARCH_CFG10)
+  );
+
+  switch (type) {
+    case CACHE_INFO_L1_IU:
+      if (reg_10 & L1_IU_PRESENT_MASK) {
+        uint32_t reg_11 = 0;
+        cache_info.present = reg_10 & L1_IU_PRESENT_MASK;
+        cache_info.unify   = reg_10 & L1_IU_UNITY_MASK;
+        __asm__ volatile (
+          "cpucfg %0, %1 \n\t"
+          : "+&r"(reg_11)
+          : "r"(LOONGARCH_CFG11)
+        );
+        cache_info.associative  = (reg_11 & CACHE_WAY_MINUS_1_MASK) + 1;
+        cache_info.linesize = pow(2, (reg_11 & CACHE_LINESIZE_LOG2_MASK) >> 24);
+        cache_info.size = cache_info.associative * cache_info.linesize *
+                          pow(2, (reg_11 & CACHE_INDEX_LOG2_MASK) >> 16);
+      }
+    break;
+
+    case CACHE_INFO_L1_D:
+      if (reg_10 & L1_D_PRESENT_MASK) {
+        uint32_t reg_12 = 0;
+        cache_info.present = reg_10 & L1_D_PRESENT_MASK;
+        __asm__ volatile (
+          "cpucfg %0, %1 \n\t"
+          : "+&r"(reg_12)
+          : "r"(LOONGARCH_CFG12)
+        );
+        cache_info.associative  = (reg_12 & CACHE_WAY_MINUS_1_MASK) + 1;
+        cache_info.linesize = pow(2, (reg_12 & CACHE_LINESIZE_LOG2_MASK) >> 24);
+        cache_info.size = cache_info.associative * cache_info.linesize *
+                          pow(2, (reg_12 & CACHE_INDEX_LOG2_MASK) >> 16);
+      }
+    break;
+
+    case CACHE_INFO_L2_IU:
+      if (reg_10 & L2_IU_PRESENT_MASK) {
+        uint32_t reg_13 = 0;
+        cache_info.present = reg_10 & L2_IU_PRESENT_MASK;
+        cache_info.unify   = reg_10 & L2_IU_UNITY_MASK;
+        __asm__ volatile (
+          "cpucfg %0, %1 \n\t"
+          : "+&r"(reg_13)
+          : "r"(LOONGARCH_CFG13)
+        );
+        cache_info.associative  = (reg_13 & CACHE_WAY_MINUS_1_MASK) + 1;
+        cache_info.linesize = pow(2, (reg_13 & CACHE_LINESIZE_LOG2_MASK) >> 24);
+        cache_info.size = cache_info.associative * cache_info.linesize *
+                          pow(2, (reg_13 & CACHE_INDEX_LOG2_MASK) >> 16);
+      }
+    break;
+
+    case CACHE_INFO_L2_D:
+      if (reg_10 & L2_D_PRESENT_MASK) {
+        cache_info.present = reg_10 & L2_D_PRESENT_MASK;
+        // No date fetch
+      }
+    break;
+
+    case CACHE_INFO_L3_IU:
+      if (reg_10 & L3_IU_PRESENT_MASK) {
+        uint32_t reg_14 = 0;
+        cache_info.present = reg_10 & L3_IU_PRESENT_MASK;
+        cache_info.unify   = reg_10 & L3_IU_UNITY_MASK;
+        __asm__ volatile (
+          "cpucfg %0, %1 \n\t"
+          : "+&r"(reg_14)
+          : "r"(LOONGARCH_CFG14)
+        );
+        cache_info.associative  = (reg_14 & CACHE_WAY_MINUS_1_MASK) + 1;
+        cache_info.linesize = pow(2, (reg_14 & CACHE_LINESIZE_LOG2_MASK) >> 24);
+        cache_info.size = cache_info.associative * cache_info.linesize *
+                          pow(2, (reg_14 & CACHE_INDEX_LOG2_MASK) >> 16);
+      }
+    break;
+
+    case CACHE_INFO_L3_D:
+      if (reg_10 & L3_D_PRESENT_MASK) {
+        cache_info.present = reg_10 & L3_D_PRESENT_MASK;
+        // No data fetch
+      }
+    break;
+
+    default:
+    break;
+  }
+  size = cache_info.size;
+}
+inline void queryCacheSizes_loongson(int& l1, int& l2, int& l3) {
+  get_cacheinfo(CACHE_INFO_L1_IU, l1);
+  get_cacheinfo(CACHE_INFO_L2_IU, l2);
+  get_cacheinfo(CACHE_INFO_L3_IU, l3);
+}
+#endif
+
 /** \internal
  * Queries and returns the cache sizes in Bytes of the L1, L2, and L3 data caches respectively */
 inline void queryCacheSizes(int& l1, int& l2, int& l3) {
@@ -1281,6 +1420,9 @@ inline void queryCacheSizes(int& l1, int& l2, int& l3) {
     //   ||cpuid_is_vendor(abcd,"SiS SiS SiS ")
     //   ||cpuid_is_vendor(abcd,"UMC UMC UMC ")
     //   ||cpuid_is_vendor(abcd,"NexGenDriven")
+#elif defined(EIGEN_ARCH_LOONGARCH64)
+  // Using cpucfg to get L1/L2/L3 cache size
+  queryCacheSizes_loongson(l1, l2, l3);
 #else
   l1 = l2 = l3 = -1;
 #endif
