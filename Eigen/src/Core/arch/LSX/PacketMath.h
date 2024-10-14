@@ -314,6 +314,7 @@ struct packet_traits<float> : default_packet_traits
     HasCeil      = 1,
     HasRound     = 1,
     HasSqrt      = 1,
+    HasLog       = 1,
     HasRsqrt     = 1
   };
 };
@@ -331,11 +332,12 @@ struct packet_traits<double> : default_packet_traits {
     HasSetLinear = 0,
     HasBlend     = 0,
     HasSign      = 0,
-    HasDiv   = 1,
-    HasFloor = 1,
-    HasCeil = 1,
-    HasSqrt = 1,
-    HasRsqrt = 1
+    HasDiv       = 1,
+    HasFloor     = 1,
+    HasCeil      = 1,
+    HasSqrt      = 1,
+    HasLog       = 1,
+    HasRsqrt     = 1
   };
 };
 
@@ -451,6 +453,7 @@ template<> struct unpacket_traits<Packet4f> {
 template<> struct unpacket_traits<Packet2d> {
   typedef double type;
   typedef Packet2d half;
+  typedef Packet2l integer_packet;
   enum
   {
     size = 2,
@@ -1780,6 +1783,8 @@ template<> EIGEN_STRONG_INLINE Packet4f pldexp<Packet4f>(const Packet4f& a, cons
   return pldexp_generic(a,exponent);
 }
 
+
+template<> EIGEN_STRONG_INLINE Packet2d pfrexp<Packet2d>(const Packet2d& a, Packet2d& exponent) { return pfrexp_generic(a, exponent); }
 template<> EIGEN_STRONG_INLINE Packet4f pfrexp<Packet4f>(const Packet4f& a, Packet4f& exponent) { return pfrexp_generic(a, exponent); }
 
 } //internal

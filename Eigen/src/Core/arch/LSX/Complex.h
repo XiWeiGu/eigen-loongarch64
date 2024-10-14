@@ -41,6 +41,7 @@ template<> struct packet_traits<std::complex<float> >  : default_packet_traits
     HasNegate = 1,
     HasSqrt   = 1,
     HasAbs    = 0,
+    HasLog    = 1,
     HasAbs2   = 0,
     HasMin    = 0,
     HasMax    = 0,
@@ -196,6 +197,12 @@ template<> EIGEN_STRONG_INLINE Packet2cf pdiv<Packet2cf>(const Packet2cf& a, con
   return pdiv_complex(a, b);
 }
 
+template <>
+EIGEN_STRONG_INLINE Packet2cf plog<Packet2cf>(const Packet2cf& a) {
+  return plog_complex(a);
+}
+
+
 //---------- double ----------
 struct Packet1cd
 {
@@ -220,6 +227,7 @@ template<> struct packet_traits<std::complex<double> >  : default_packet_traits
     HasNegate = 1,
     HasSqrt   = 1,
     HasAbs    = 0,
+    HasLog    = 1,
     HasAbs2   = 0,
     HasMin    = 0,
     HasMax    = 0,
@@ -375,6 +383,12 @@ template<> EIGEN_STRONG_INLINE Packet1cd psqrt<Packet1cd>(const Packet1cd& a) {
 template<> EIGEN_STRONG_INLINE Packet2cf psqrt<Packet2cf>(const Packet2cf& a) {
   return psqrt_complex<Packet2cf>(a);
 }
+
+template <>
+EIGEN_STRONG_INLINE Packet1cd plog<Packet1cd>(const Packet1cd& a) {
+  return plog_complex(a);
+}
+
 
 } // end namespace internal
 } // end namespace Eigen
