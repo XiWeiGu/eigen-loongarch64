@@ -310,9 +310,6 @@ struct packet_traits<float> : default_packet_traits
     HasSign      = 0,
     HasDiv       = 1,
     HasExp       = 1,
-    HasFloor     = 1,
-    HasCeil      = 1,
-    HasRound     = 1,
     HasSqrt      = 1,
     HasLog       = 1,
     HasRsqrt     = 1
@@ -333,8 +330,6 @@ struct packet_traits<double> : default_packet_traits {
     HasBlend     = 0,
     HasSign      = 0,
     HasDiv       = 1,
-    HasFloor     = 1,
-    HasCeil      = 1,
     HasSqrt      = 1,
     HasLog       = 1,
     HasRsqrt     = 1
@@ -1718,7 +1713,16 @@ template<> EIGEN_STRONG_INLINE Packet2d pfloor(const Packet2d& a) { return __lsx
 template<> EIGEN_STRONG_INLINE Packet4f pceil(const Packet4f& a) { return __lsx_vfrintrp_s(a); }
 template<> EIGEN_STRONG_INLINE Packet2d pceil(const Packet2d& a) { return __lsx_vfrintrp_d(a); }
 
-template<> EIGEN_STRONG_INLINE Packet4f pround(const Packet4f& a) { return __lsx_vfrint_s(a); }
+template<> EIGEN_STRONG_INLINE Packet4f pround(const Packet4f& a) {
+  const Packet4f mask = pset1frombits<Packet4f>(static_cast<numext::uint32_t>(0x80000000u));
+  const Packet4f prev0dot5 = pset1frombits<Packet4f>(static_cast<numext::uint32_t>(0x3EFFFFFFu));
+  return __lsx_vfrintrz_s(padd(pxor(pand(a, mask), prev0dot5), a));
+}
+template<> EIGEN_STRONG_INLINE Packet2d pround(const Packet2d& a) {
+  const Packet2d mask = pset1frombits<Packet2d>(static_cast<numext::uint64_t>(0x8000000000000000ull));
+  const Packet2d prev0dot5 = pset1frombits<Packet2d>(static_cast<numext::uint64_t>(0x3FDFFFFFFFFFFFFFull));
+  return __lsx_vfrintrz_d(padd(por(pand(a, mask), prev0dot5), a));
+}
 
 template<> EIGEN_DEVICE_FUNC inline Packet4f pselect(const Packet4f& mask, const Packet4f& a, const Packet4f& b) { return (Packet4f)__lsx_vbitsel_v((__m128i)b, (__m128i)a, (__m128i)mask); }
 template<> EIGEN_DEVICE_FUNC inline Packet16c pselect(const Packet16c& mask, const Packet16c& a, const Packet16c& b) { return (Packet16c)__lsx_vbitsel_v((__m128i)b, (__m128i)a, (__m128i)mask); }
