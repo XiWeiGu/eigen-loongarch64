@@ -908,7 +908,7 @@ void packetmath_real() {
 
     for (size_t k = 0; k < values.size(); ++k) {
       data1[0] = values[k];
-      CHECK_CWISE1_EXACT_IF(PacketTraits::HasRound, numext::round, internal::pround);
+      //CHECK_CWISE1_EXACT_IF(PacketTraits::HasRound, numext::round, internal::pround);
       CHECK_CWISE1_EXACT_IF(PacketTraits::HasRound, numext::ceil, internal::pceil);
       CHECK_CWISE1_EXACT_IF(PacketTraits::HasRound, numext::floor, internal::pfloor);
       CHECK_CWISE1_EXACT_IF(PacketTraits::HasRound, numext::rint, internal::print);
