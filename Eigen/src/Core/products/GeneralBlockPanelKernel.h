@@ -2587,7 +2587,9 @@ EIGEN_DONT_INLINE void gemm_pack_lhs<Scalar, Index, DataMapper, Pack1, Pack2, Pa
   conj_if<NumTraits<Scalar>::IsComplex && Conjugate> cj;
   Index count = 0;
 
-  const Index peeled_mc3 = Pack1 >= 3 * PacketSize ? (rows / (3 * PacketSize)) * (3 * PacketSize) : 0;
+  const Index peeled_mc4 = Pack1 >= 4 * PacketSize ? (rows / (4 * PacketSize)) * (4 * PacketSize) : 0;
+  const Index peeled_mc3 =
+      Pack1 >= 3 * PacketSize ? peeled_mc4 + ((rows - peeled_mc4) / (3 * PacketSize)) * (3 * PacketSize) : 0;
   const Index peeled_mc2 =
       Pack1 >= 2 * PacketSize ? peeled_mc3 + ((rows - peeled_mc3) / (2 * PacketSize)) * (2 * PacketSize) : 0;
   const Index peeled_mc1 =
@@ -2601,6 +2603,29 @@ EIGEN_DONT_INLINE void gemm_pack_lhs<Scalar, Index, DataMapper, Pack1, Pack2, Pa
                                                             : 0;
 
   Index i = 0;
+  // Pack 4 packets
+  if (Pack1 >= 4 * PacketSize) {
+    for (; i < peeled_mc4; i += 4 * PacketSize) {
+      if (PanelMode) count += (4 * PacketSize) * offset;
+
+      for (Index k = 0; k < depth; k++) {
+        Packet A, B, C, D;
+        A = lhs.template loadPacket<Packet>(i + 0 * PacketSize, k);
+        B = lhs.template loadPacket<Packet>(i + 1 * PacketSize, k);
+        C = lhs.template loadPacket<Packet>(i + 2 * PacketSize, k);
+        D = lhs.template loadPacket<Packet>(i + 3 * PacketSize, k);
+        pstore(blockA + count, cj.pconj(A));
+        count += PacketSize;
+        pstore(blockA + count, cj.pconj(B));
+        count += PacketSize;
+        pstore(blockA + count, cj.pconj(C));
+        count += PacketSize;
+        pstore(blockA + count, cj.pconj(D));
+        count += PacketSize;
+      }
+      if (PanelMode) count += (4 * PacketSize) * (stride - offset - depth);
+    }
+  }
 
   // Pack 3 packets
   if (Pack1 >= 3 * PacketSize) {
@@ -2622,6 +2647,7 @@ EIGEN_DONT_INLINE void gemm_pack_lhs<Scalar, Index, DataMapper, Pack1, Pack2, Pa
       if (PanelMode) count += (3 * PacketSize) * (stride - offset - depth);
     }
   }
+
   // Pack 2 packets
   if (Pack1 >= 2 * PacketSize) {
     for (; i < peeled_mc2; i += 2 * PacketSize) {
