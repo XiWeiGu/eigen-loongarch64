@@ -1,7 +1,8 @@
 // This file is part of Eigen, a lightweight C++ template library
 // for linear algebra.
 //
-// Copyright (C) 2023 Zang Ruochen <zangruochen@loongson.cn>
+// copyright (c) 2023 zang ruochen <zangruochen@loongson.cn>
+// copyright (c) 2024 XiWei Gu <guxiwei-hf@loongson.cn>
 //
 // This Source Code Form is subject to the terms of the Mozilla
 // Public License v. 2.0. If a copy of the MPL was not distributed
@@ -40,6 +41,7 @@ template<> struct packet_traits<std::complex<float> >  : default_packet_traits
     HasDiv    = 1,
     HasNegate = 1,
     HasSqrt   = 1,
+    HasExp    = 1,
     HasAbs    = 0,
     HasLog    = 1,
     HasAbs2   = 0,
@@ -202,6 +204,29 @@ EIGEN_STRONG_INLINE Packet2cf plog<Packet2cf>(const Packet2cf& a) {
   return plog_complex(a);
 }
 
+template <>
+EIGEN_STRONG_INLINE Packet2cf pzero(const Packet2cf& a) {
+  return Packet2cf(__lsx_vfsub_s(a.v, a.v));
+}
+
+template <>
+EIGEN_STRONG_INLINE Packet2cf pmadd<Packet2cf>(const Packet2cf& a, const Packet2cf& b, const Packet2cf& c) {
+  Packet2cf result, t0, t1, t2;
+  pzero(t1);
+  t0.v = (__m128)__lsx_vpackev_w((__m128i)a.v, (__m128i)a.v);
+  t2.v = __lsx_vfmadd_s(t0.v, b.v, c.v);
+  result.v = __lsx_vfadd_s(t2.v, t1.v);
+  t1.v = __lsx_vfsub_s(t1.v, a.v);
+  t1.v = (__m128)__lsx_vpackod_w((__m128i)a.v, (__m128i)t1.v);
+  t2.v = (__m128)__lsx_vshuf4i_w((__m128i)b.v, 0xb1);
+  result.v = __lsx_vfmadd_s(t1.v, t2.v, result.v);
+  return result;
+}
+
+template <>
+EIGEN_STRONG_INLINE Packet2cf pexp<Packet2cf>(const Packet2cf& a) {
+  return pexp_complex(a);
+}
 
 //---------- double ----------
 struct Packet1cd
@@ -389,6 +414,46 @@ EIGEN_STRONG_INLINE Packet1cd plog<Packet1cd>(const Packet1cd& a) {
   return plog_complex(a);
 }
 
+template <>
+EIGEN_STRONG_INLINE Packet1cd pzero<Packet1cd>(const Packet1cd& a) {
+  return Packet1cd(__lsx_vfsub_d(a.v, a.v));
+}
+
+template <>
+EIGEN_STRONG_INLINE Packet1cd pmadd<Packet1cd>(const Packet1cd& a, const Packet1cd& b, const Packet1cd& c) {
+  Packet1cd result, t0, t1, t2;
+  pzero(t1);
+  t0.v = (__m128d)__lsx_vpackev_d((__m128i)a.v, (__m128i)a.v);
+  t2.v = __lsx_vfmadd_d(t0.v, b.v, c.v);
+  result.v = __lsx_vfadd_d(t2.v, t1.v);
+  t1.v = __lsx_vfsub_d(t1.v, a.v);
+  t1.v = (__m128d)__lsx_vpackod_d((__m128i)a.v, (__m128i)t1.v);
+  t2.v = (__m128d)__lsx_vshuf4i_d((__m128i)t2.v, (__m128i)b.v, 0xb);
+  result.v = __lsx_vfmadd_d(t1.v, t2.v, result.v);
+  return result;
+}
+
+template <>
+EIGEN_DEVICE_FUNC inline Packet1cd pgather<std::complex<double>, Packet1cd>(const std::complex<double>* from,
+                                                                            Index /* stride */) {
+  Packet1cd res;
+  double real1 = from[0].real(), imag1 = from[0].imag();
+  Packet2d tmp = {real1, imag1};
+  res.v = tmp;
+  return res;
+}
+
+template <>
+EIGEN_DEVICE_FUNC inline void pscatter<std::complex<double>, Packet1cd>(std::complex<double>* to, const Packet1cd& from,
+                                                                        Index /* stride */) {
+  *to = std::complex<double>(from.v[0], from.v[1]);
+}
+
+EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet1cd, 2>& kernel) {
+  Packet2d tmp = (__m128d)__lsx_vilvl_d((__m128i)kernel.packet[1].v, (__m128i)kernel.packet[0].v);
+  kernel.packet[1].v = (__m128d)__lsx_vilvh_d((__m128i)kernel.packet[1].v, (__m128i)kernel.packet[0].v);
+  kernel.packet[0].v = tmp;
+}
 
 } // end namespace internal
 } // end namespace Eigen
