@@ -1823,11 +1823,45 @@ EIGEN_STRONG_INLINE Packet4f print<Packet4f>(const Packet4f& a) {
 }
 template <>
 EIGEN_STRONG_INLINE Packet4f ptrunc<Packet4f>(const Packet4f& a) {
-  return __lsx_vfrint(a);
+  return __lsx_vfrint_s(a);
 }
 template <>
 EIGEN_STRONG_INLINE Packet4f preciprocal<Packet4f>(const Packet4f& a) {
   return __lsx_vfrecip(a);
+}
+
+template <>
+EIGEN_STRONG_INLINE Packet2d pzero(const Packet2d& a) {
+  return __lsx_vfsub_d(a, a);
+}
+template <>
+EIGEN_STRONG_INLINE Packet2d pmin<PropagateNaN, Packet2d>(const Packet2d& a, const Packet2d& b) {
+  return pmin<Packet2d>(a, b);
+}
+template <>
+EIGEN_STRONG_INLINE Packet2d pmax<PropagateNaN, Packet2d>(const Packet2d& a, const Packet2d& b) {
+  return pmax<Packet2d>(a, b);
+}
+template <>
+EIGEN_STRONG_INLINE Packet2d psignbit(const Packet2d& a) {
+  return (__m128d)__lsx_vsrli_d((__128i)a, 63);
+}
+template <>
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet2d pselect(const Packet2d& mask, const Packet2d& a, const Packet2d& b) {
+  __m128i v = __lsx_vseqi_d((__m128i)mask, 0);
+  return (Packet2d)__lsx_vbitsel_v((__m128i)a, (__m128i)b, v);
+}
+template <>
+EIGEN_STRONG_INLINE Packet2d print<Packet2d>(const Packet2d& a) {
+  return __lsx_vfrintrne_d(a);
+}
+template <>
+EIGEN_STRONG_INLINE Packet2d ptrunc<Packet2d>(const Packet2d& a) {
+  return __lsx_vfrint_d(a);
+}
+template <>
+EIGEN_STRONG_INLINE Packet2d pldexp<Packet2d>(const Packet2d& a, const Packet2d& exponent) {
+  return pldexp_generic(a, exponent);
 }
 
 
