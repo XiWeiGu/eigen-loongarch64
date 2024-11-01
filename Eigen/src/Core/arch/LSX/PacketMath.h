@@ -459,6 +459,7 @@ template<> struct unpacket_traits<Packet2d> {
   };
 };
 
+
 template<> EIGEN_STRONG_INLINE Packet16c pset1<Packet16c>(const int8_t& from) { return __lsx_vreplgr2vr_b(from); }
 template<> EIGEN_STRONG_INLINE Packet8s pset1<Packet8s>(const int16_t& from) { return __lsx_vreplgr2vr_h(from); }
 template<> EIGEN_STRONG_INLINE Packet4i pset1<Packet4i>(const int32_t& from) { return __lsx_vreplgr2vr_w(from); }
@@ -867,7 +868,7 @@ template<> EIGEN_STRONG_INLINE void pstoreu<uint32_t>(uint32_t* to, const Packet
 template<> EIGEN_STRONG_INLINE void pstoreu<uint64_t>(uint64_t* to, const Packet2ul& from) { EIGEN_DEBUG_UNALIGNED_STORE __lsx_vst((__m128i)from, to, 0); }
 
 template<>
-EIGEN_DEVICE_FUNC inline Packet4f pgather<float, Packet4f>(const float* from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet4f pgather<float, Packet4f>(const float* from, Index stride) {
   float f = *from;
   Packet4f v = { f, f, f, f };
   v[1] = from[stride];
@@ -876,14 +877,14 @@ EIGEN_DEVICE_FUNC inline Packet4f pgather<float, Packet4f>(const float* from, In
   return v;
 }
 template<>
-EIGEN_DEVICE_FUNC inline Packet2d pgather<double, Packet2d>(const double* from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet2d pgather<double, Packet2d>(const double* from, Index stride) {
   double f = *from;
   Packet2d v = { f, f };
   v[1] = from[stride];
   return v;
 }
 template<>
-EIGEN_DEVICE_FUNC inline Packet16c pgather<int8_t, Packet16c>(const int8_t* from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet16c pgather<int8_t, Packet16c>(const int8_t* from, Index stride) {
   int8_t i = *from;
   int8_t v[] = { i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i };
   v[1] = from[stride];
@@ -904,7 +905,7 @@ EIGEN_DEVICE_FUNC inline Packet16c pgather<int8_t, Packet16c>(const int8_t* from
   return __lsx_vld(v, 0);
 }
 template<>
-EIGEN_DEVICE_FUNC inline Packet8s pgather<int16_t, Packet8s>(const int16_t* from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet8s pgather<int16_t, Packet8s>(const int16_t* from, Index stride) {
   int16_t i = *from;
   int16_t v[] = { i, i, i, i, i, i, i, i };
   v[1] = from[stride];
@@ -917,7 +918,7 @@ EIGEN_DEVICE_FUNC inline Packet8s pgather<int16_t, Packet8s>(const int16_t* from
   return __lsx_vld(v, 0);
 }
 template<>
-EIGEN_DEVICE_FUNC inline Packet4i pgather<int32_t, Packet4i>(const int32_t* from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet4i pgather<int32_t, Packet4i>(const int32_t* from, Index stride) {
   int32_t i = *from;
   int32_t v[] = { i, i, i, i };
   v[1] = from[stride];
@@ -926,14 +927,14 @@ EIGEN_DEVICE_FUNC inline Packet4i pgather<int32_t, Packet4i>(const int32_t* from
   return __lsx_vld(v, 0);
 }
 template<>
-EIGEN_DEVICE_FUNC inline Packet2l pgather<int64_t, Packet2l>(const int64_t* from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet2l pgather<int64_t, Packet2l>(const int64_t* from, Index stride) {
   int64_t i = *from;
   int64_t v[] = { i, i };
   v[1] = from[stride];
   return __lsx_vld(v, 0);
 }
 template<>
-EIGEN_DEVICE_FUNC inline Packet16uc pgather<uint8_t, Packet16uc>(const uint8_t* from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet16uc pgather<uint8_t, Packet16uc>(const uint8_t* from, Index stride) {
   uint8_t i = *from;
   uint8_t v[] = { i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i };
   v[1] = from[stride];
@@ -954,7 +955,7 @@ EIGEN_DEVICE_FUNC inline Packet16uc pgather<uint8_t, Packet16uc>(const uint8_t* 
   return __lsx_vld(v, 0);
 }
 template<>
-EIGEN_DEVICE_FUNC inline Packet8us pgather<uint16_t, Packet8us>(const uint16_t* from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet8us pgather<uint16_t, Packet8us>(const uint16_t* from, Index stride) {
   uint16_t i = *from;
   uint16_t v[] = { i, i, i, i, i, i, i, i };
   v[1] = from[stride];
@@ -967,7 +968,7 @@ EIGEN_DEVICE_FUNC inline Packet8us pgather<uint16_t, Packet8us>(const uint16_t* 
   return __lsx_vld(v, 0);
 }
 template<>
-EIGEN_DEVICE_FUNC inline Packet4ui pgather<uint32_t, Packet4ui>(const uint32_t* from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet4ui pgather<uint32_t, Packet4ui>(const uint32_t* from, Index stride) {
   uint32_t i = *from;
   uint32_t v[] = { i, i, i, i };
   v[1] = from[stride];
@@ -976,7 +977,7 @@ EIGEN_DEVICE_FUNC inline Packet4ui pgather<uint32_t, Packet4ui>(const uint32_t* 
   return __lsx_vld(v, 0);
 }
 template<>
-EIGEN_DEVICE_FUNC inline Packet2ul pgather<uint64_t, Packet2ul>(const uint64_t* from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet2ul pgather<uint64_t, Packet2ul>(const uint64_t* from, Index stride) {
   uint64_t i = *from;
   uint64_t v[] = { i, i };
   v[1] = from[stride];
@@ -984,7 +985,7 @@ EIGEN_DEVICE_FUNC inline Packet2ul pgather<uint64_t, Packet2ul>(const uint64_t* 
 }
 
 template<>
-EIGEN_DEVICE_FUNC inline void pscatter<float, Packet4f>(float* to, const Packet4f& from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<float, Packet4f>(float* to, const Packet4f& from, Index stride) {
   *to = from[0];
   to += stride;
   *to = from[1];
@@ -994,13 +995,13 @@ EIGEN_DEVICE_FUNC inline void pscatter<float, Packet4f>(float* to, const Packet4
   *to = from[3];
 }
 template<>
-EIGEN_DEVICE_FUNC inline void pscatter<double, Packet2d>(double* to, const Packet2d& from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<double, Packet2d>(double* to, const Packet2d& from, Index stride) {
   *to = from[0];
   to += stride;
   *to = from[1];
 }
 template<>
-EIGEN_DEVICE_FUNC inline void pscatter<int8_t, Packet16c>(int8_t* to, const Packet16c& from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<int8_t, Packet16c>(int8_t* to, const Packet16c& from, Index stride) {
   to[stride*0] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 0);
   to[stride*1] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 1);
   to[stride*2] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 2);
@@ -1019,7 +1020,7 @@ EIGEN_DEVICE_FUNC inline void pscatter<int8_t, Packet16c>(int8_t* to, const Pack
   to[stride*15] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 15);
 }
 template<>
-EIGEN_DEVICE_FUNC inline void pscatter<int16_t, Packet8s>(int16_t* to, const Packet8s& from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<int16_t, Packet8s>(int16_t* to, const Packet8s& from, Index stride) {
   to[stride*0] = (int16_t)__lsx_vpickve2gr_h((__m128i)from, 0);
   to[stride*1] = (int16_t)__lsx_vpickve2gr_h((__m128i)from, 1);
   to[stride*2] = (int16_t)__lsx_vpickve2gr_h((__m128i)from, 2);
@@ -1030,19 +1031,19 @@ EIGEN_DEVICE_FUNC inline void pscatter<int16_t, Packet8s>(int16_t* to, const Pac
   to[stride*7] = (int16_t)__lsx_vpickve2gr_h((__m128i)from, 7);
 }
 template<>
-EIGEN_DEVICE_FUNC inline void pscatter<int32_t, Packet4i>(int32_t* to, const Packet4i& from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<int32_t, Packet4i>(int32_t* to, const Packet4i& from, Index stride) {
   to[stride*0] = (int32_t)__lsx_vpickve2gr_w((__m128i)from, 0);
   to[stride*1] = (int32_t)__lsx_vpickve2gr_w((__m128i)from, 1);
   to[stride*2] = (int32_t)__lsx_vpickve2gr_w((__m128i)from, 2);
   to[stride*3] = (int32_t)__lsx_vpickve2gr_w((__m128i)from, 3);
 }
 template<>
-EIGEN_DEVICE_FUNC inline void pscatter<int64_t, Packet2l>(int64_t* to, const Packet2l& from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<int64_t, Packet2l>(int64_t* to, const Packet2l& from, Index stride) {
   to[stride*0] = (int64_t)__lsx_vpickve2gr_d((__m128i)from, 0);
   to[stride*1] = (int64_t)__lsx_vpickve2gr_d((__m128i)from, 1);
 }
 template<>
-EIGEN_DEVICE_FUNC inline void pscatter<uint8_t, Packet16uc>(uint8_t* to, const Packet16uc& from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<uint8_t, Packet16uc>(uint8_t* to, const Packet16uc& from, Index stride) {
   to[stride*0] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 0);
   to[stride*1] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 1);
   to[stride*2] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 2);
@@ -1061,7 +1062,7 @@ EIGEN_DEVICE_FUNC inline void pscatter<uint8_t, Packet16uc>(uint8_t* to, const P
   to[stride*15] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 15);
 }
 template<>
-EIGEN_DEVICE_FUNC inline void pscatter<uint16_t, Packet8us>(uint16_t* to, const Packet8us& from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<uint16_t, Packet8us>(uint16_t* to, const Packet8us& from, Index stride) {
   to[stride*0] = (uint16_t)__lsx_vpickve2gr_h((__m128i)from, 0);
   to[stride*1] = (uint16_t)__lsx_vpickve2gr_h((__m128i)from, 1);
   to[stride*2] = (uint16_t)__lsx_vpickve2gr_h((__m128i)from, 2);
@@ -1072,14 +1073,14 @@ EIGEN_DEVICE_FUNC inline void pscatter<uint16_t, Packet8us>(uint16_t* to, const 
   to[stride*7] = (uint16_t)__lsx_vpickve2gr_h((__m128i)from, 7);
 }
 template<>
-EIGEN_DEVICE_FUNC inline void pscatter<uint32_t, Packet4ui>(uint32_t* to, const Packet4ui& from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<uint32_t, Packet4ui>(uint32_t* to, const Packet4ui& from, Index stride) {
   to[stride*0] = (uint32_t)__lsx_vpickve2gr_w((__m128i)from, 0);
   to[stride*1] = (uint32_t)__lsx_vpickve2gr_w((__m128i)from, 1);
   to[stride*2] = (uint32_t)__lsx_vpickve2gr_w((__m128i)from, 2);
   to[stride*3] = (uint32_t)__lsx_vpickve2gr_w((__m128i)from, 3);
 }
 template<>
-EIGEN_DEVICE_FUNC inline void pscatter<uint64_t, Packet2ul>(uint64_t* to, const Packet2ul& from, Index stride) {
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<uint64_t, Packet2ul>(uint64_t* to, const Packet2ul& from, Index stride) {
   to[stride*0] = (uint64_t)__lsx_vpickve2gr_d((__m128i)from, 0);
   to[stride*1] = (uint64_t)__lsx_vpickve2gr_d((__m128i)from, 1);
 }
@@ -1345,7 +1346,7 @@ template<> EIGEN_STRONG_INLINE uint64_t predux_max<Packet2ul>(const Packet2ul& a
 template<> EIGEN_STRONG_INLINE Packet4f psqrt(const Packet4f& a) { return __lsx_vfsqrt_s(a); }
 template<> EIGEN_STRONG_INLINE Packet2d psqrt(const Packet2d& a) { return __lsx_vfsqrt_d(a); }
 
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet4f, 4>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet4f, 4>& kernel)
 {
   Packet4f T0 = (Packet4f)__lsx_vilvl_w((__m128i)kernel.packet[1], (__m128i)kernel.packet[0]);
   Packet4f T1 = (Packet4f)__lsx_vilvh_w((__m128i)kernel.packet[1], (__m128i)kernel.packet[0]);
@@ -1357,13 +1358,13 @@ EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet4f, 4>& kernel)
   kernel.packet[2] = (Packet4f)__lsx_vilvl_d((__m128i)T3, (__m128i)T1);
   kernel.packet[3] = (Packet4f)__lsx_vilvh_d((__m128i)T3, (__m128i)T1);
 }
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet2d, 2>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet2d, 2>& kernel)
 {
   Packet2d tmp = (Packet2d)__lsx_vilvh_d((__m128i)kernel.packet[1], (__m128i)kernel.packet[0]);
   kernel.packet[0] = (Packet2d)__lsx_vilvl_d((__m128i)kernel.packet[1], (__m128i)kernel.packet[0]);
   kernel.packet[1] = tmp;
 }
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet16c, 16>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet16c, 16>& kernel)
 {
   __m128i t0 = __lsx_vilvl_b(kernel.packet[1], kernel.packet[0]);
   __m128i t1 = __lsx_vilvh_b(kernel.packet[1], kernel.packet[0]);
@@ -1433,7 +1434,7 @@ EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet16c, 16>& kernel)
   kernel.packet[14] = __lsx_vilvl_d(uf, u7);
   kernel.packet[15] = __lsx_vilvh_d(uf, u7);
 }
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet16c, 8>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet16c, 8>& kernel)
 {
   __m128i t0 = __lsx_vilvl_b(kernel.packet[1], kernel.packet[0]);
   __m128i t1 = __lsx_vilvh_b(kernel.packet[1], kernel.packet[0]);
@@ -1462,7 +1463,7 @@ EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet16c, 8>& kernel)
   kernel.packet[6] = __lsx_vilvl_w(s7, s3);
   kernel.packet[7] = __lsx_vilvh_w(s7, s3);
 }
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet16c, 4>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet16c, 4>& kernel)
 {
   __m128i t0 = __lsx_vilvl_b(kernel.packet[1], kernel.packet[0]);
   __m128i t1 = __lsx_vilvh_b(kernel.packet[1], kernel.packet[0]);
@@ -1474,7 +1475,7 @@ EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet16c, 4>& kernel)
   kernel.packet[2] = __lsx_vilvl_h(t3, t1);
   kernel.packet[3] = __lsx_vilvh_h(t3, t1);
 }
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet8s, 8>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet8s, 8>& kernel)
 {
   __m128i t0 = __lsx_vilvl_h(kernel.packet[1], kernel.packet[0]);
   __m128i t1 = __lsx_vilvh_h(kernel.packet[1], kernel.packet[0]);
@@ -1503,7 +1504,7 @@ EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet8s, 8>& kernel)
   kernel.packet[6] = __lsx_vilvl_d(s7, s3);
   kernel.packet[7] = __lsx_vilvh_d(s7, s3);
 }
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet8s, 4>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet8s, 4>& kernel)
 {
   __m128i t0 = __lsx_vilvl_h(kernel.packet[1], kernel.packet[0]);
   __m128i t1 = __lsx_vilvh_h(kernel.packet[1], kernel.packet[0]);
@@ -1515,7 +1516,7 @@ EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet8s, 4>& kernel)
   kernel.packet[2] = __lsx_vilvl_w(t3, t1);
   kernel.packet[3] = __lsx_vilvh_w(t3, t1);
 }
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet4i, 4>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet4i, 4>& kernel)
 {
   __m128i T0 = __lsx_vilvl_w(kernel.packet[1], kernel.packet[0]);
   __m128i T1 = __lsx_vilvh_w(kernel.packet[1], kernel.packet[0]);
@@ -1527,13 +1528,13 @@ EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet4i, 4>& kernel)
   kernel.packet[2] = __lsx_vilvl_d(T3, T1);
   kernel.packet[3] = __lsx_vilvh_d(T3, T1);
 }
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet2l, 2>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet2l, 2>& kernel)
 {
   __m128i tmp = __lsx_vilvh_d(kernel.packet[1], kernel.packet[0]);
   kernel.packet[0] = __lsx_vilvl_d(kernel.packet[1], kernel.packet[0]);
   kernel.packet[1] = tmp;
 }
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet16uc, 16>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet16uc, 16>& kernel)
 {
   __m128i t0 = __lsx_vilvl_b(kernel.packet[1], kernel.packet[0]);
   __m128i t1 = __lsx_vilvh_b(kernel.packet[1], kernel.packet[0]);
@@ -1603,7 +1604,7 @@ EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet16uc, 16>& kernel)
   kernel.packet[14] = __lsx_vilvl_d(uf, u7);
   kernel.packet[15] = __lsx_vilvh_d(uf, u7);
 }
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet16uc, 8>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet16uc, 8>& kernel)
 {
   __m128i t0 = __lsx_vilvl_b(kernel.packet[1], kernel.packet[0]);
   __m128i t1 = __lsx_vilvh_b(kernel.packet[1], kernel.packet[0]);
@@ -1632,7 +1633,7 @@ EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet16uc, 8>& kernel)
   kernel.packet[6] = __lsx_vilvl_w(s7, s3);
   kernel.packet[7] = __lsx_vilvh_w(s7, s3);
 }
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet16uc, 4>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet16uc, 4>& kernel)
 {
   __m128i t0 = __lsx_vilvl_b(kernel.packet[1], kernel.packet[0]);
   __m128i t1 = __lsx_vilvh_b(kernel.packet[1], kernel.packet[0]);
@@ -1644,7 +1645,7 @@ EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet16uc, 4>& kernel)
   kernel.packet[2] = __lsx_vilvl_h(t3, t1);
   kernel.packet[3] = __lsx_vilvh_h(t3, t1);
 }
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet8us, 8>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet8us, 8>& kernel)
 {
   __m128i t0 = __lsx_vilvl_h(kernel.packet[1], kernel.packet[0]);
   __m128i t1 = __lsx_vilvh_h(kernel.packet[1], kernel.packet[0]);
@@ -1673,7 +1674,7 @@ EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet8us, 8>& kernel)
   kernel.packet[6] = __lsx_vilvl_d(s7, s3);
   kernel.packet[7] = __lsx_vilvh_d(s7, s3);
 }
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet8us, 4>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet8us, 4>& kernel)
 {
   __m128i t0 = __lsx_vilvl_h(kernel.packet[1], kernel.packet[0]);
   __m128i t1 = __lsx_vilvh_h(kernel.packet[1], kernel.packet[0]);
@@ -1685,7 +1686,7 @@ EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet8us, 4>& kernel)
   kernel.packet[2] = __lsx_vilvl_w(t3, t1);
   kernel.packet[3] = __lsx_vilvh_w(t3, t1);
 }
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet4ui, 4>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet4ui, 4>& kernel)
 {
   __m128i T0 = __lsx_vilvl_w(kernel.packet[1], kernel.packet[0]);
   __m128i T1 = __lsx_vilvh_w(kernel.packet[1], kernel.packet[0]);
@@ -1697,7 +1698,7 @@ EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet4ui, 4>& kernel)
   kernel.packet[2] = __lsx_vilvl_d(T3, T1);
   kernel.packet[3] = __lsx_vilvh_d(T3, T1);
 }
-EIGEN_DEVICE_FUNC inline void ptranspose(PacketBlock<Packet2ul, 2>& kernel)
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet2ul, 2>& kernel)
 {
   __m128i tmp = __lsx_vilvh_d(kernel.packet[1], kernel.packet[0]);
   kernel.packet[0] = __lsx_vilvl_d(kernel.packet[1], kernel.packet[0]);
@@ -1724,8 +1725,8 @@ template<> EIGEN_STRONG_INLINE Packet2d pround(const Packet2d& a) {
   return __lsx_vfrintrz_d(padd(por(pand(a, mask), prev0dot5), a));
 }
 
-template<> EIGEN_DEVICE_FUNC inline Packet4f pselect(const Packet4f& mask, const Packet4f& a, const Packet4f& b) { return (Packet4f)__lsx_vbitsel_v((__m128i)b, (__m128i)a, (__m128i)mask); }
-template<> EIGEN_DEVICE_FUNC inline Packet16c pselect(const Packet16c& mask, const Packet16c& a, const Packet16c& b) { return (Packet16c)__lsx_vbitsel_v((__m128i)b, (__m128i)a, (__m128i)mask); }
+template<> EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet4f pselect(const Packet4f& mask, const Packet4f& a, const Packet4f& b) { return (Packet4f)__lsx_vbitsel_v((__m128i)b, (__m128i)a, (__m128i)mask); }
+template<> EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet16c pselect(const Packet16c& mask, const Packet16c& a, const Packet16c& b) { return (Packet16c)__lsx_vbitsel_v((__m128i)b, (__m128i)a, (__m128i)mask); }
 
 template<> EIGEN_STRONG_INLINE Packet16c ploadquad<Packet16c>(const int8_t* from)
 {
@@ -1790,6 +1791,45 @@ template<> EIGEN_STRONG_INLINE Packet4f pldexp<Packet4f>(const Packet4f& a, cons
 
 template<> EIGEN_STRONG_INLINE Packet2d pfrexp<Packet2d>(const Packet2d& a, Packet2d& exponent) { return pfrexp_generic(a, exponent); }
 template<> EIGEN_STRONG_INLINE Packet4f pfrexp<Packet4f>(const Packet4f& a, Packet4f& exponent) { return pfrexp_generic(a, exponent); }
+
+template <>
+EIGEN_STRONG_INLINE Packet4f pzero(const Packet4f& a) {
+  return __lsx_vfsub_s(a, a);
+}
+template <>
+EIGEN_STRONG_INLINE Packet4f pabsdiff<Packet4f>(const Packet4f& a, const Packet4f& b) {
+  Packet4f v = psub(a, b);
+  return pabs(v);
+}
+template <>
+EIGEN_STRONG_INLINE Packet4f pmin<PropagateNaN, Packet4f>(const Packet4f& a, const Packet4f& b) {
+  return pmin<Packet4f>(a, b);
+}
+template <>
+EIGEN_STRONG_INLINE Packet4f pmax<PropagateNaN, Packet4f>(const Packet4f& a, const Packet4f& b) {
+  return pmax<Packet4f>(a, b);
+}
+template <>
+EIGEN_STRONG_INLINE Packet4f ploadquad<Packet4f>(const float* from) {
+  return (__m128)__lsx_vldrepl_w(from, 0);
+}
+template <>
+EIGEN_STRONG_INLINE Packet4f psignbit(const Packet4f& a) {
+  return (__m128)__lsx_vsrli_w((__128i)a, 31);
+}
+template <>
+EIGEN_STRONG_INLINE Packet4f print<Packet4f>(const Packet4f& a) {
+  return __lsx_vfrintrne_s(a);
+}
+template <>
+EIGEN_STRONG_INLINE Packet4f ptrunc<Packet4f>(const Packet4f& a) {
+  return __lsx_vfrint(a);
+}
+template <>
+EIGEN_STRONG_INLINE Packet4f preciprocal<Packet4f>(const Packet4f& a) {
+  return __lsx_vfrecip(a);
+}
+
 
 } //internal
 } //Eigen
