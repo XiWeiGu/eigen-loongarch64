@@ -1793,8 +1793,9 @@ template<> EIGEN_STRONG_INLINE Packet2d pfrexp<Packet2d>(const Packet2d& a, Pack
 template<> EIGEN_STRONG_INLINE Packet4f pfrexp<Packet4f>(const Packet4f& a, Packet4f& exponent) { return pfrexp_generic(a, exponent); }
 
 template <>
-EIGEN_STRONG_INLINE Packet4f pzero(const Packet4f& a) {
-  return __lsx_vfsub_s(a, a);
+EIGEN_STRONG_INLINE Packet4f pzero(const Packet4f& /* a */) {
+  Packet4f v = {0.0f, 0.0f, 0.0f, 0.0f};
+  return v;
 }
 template <>
 EIGEN_STRONG_INLINE Packet4f pabsdiff<Packet4f>(const Packet4f& a, const Packet4f& b) {
@@ -1815,7 +1816,7 @@ EIGEN_STRONG_INLINE Packet4f ploadquad<Packet4f>(const float* from) {
 }
 template <>
 EIGEN_STRONG_INLINE Packet4f psignbit(const Packet4f& a) {
-  return (__m128)__lsx_vsrli_w((__128i)a, 31);
+  return (__m128)__lsx_vsrai_w((__m128i)a, 31);
 }
 template <>
 EIGEN_STRONG_INLINE Packet4f print<Packet4f>(const Packet4f& a) {
@@ -1823,11 +1824,46 @@ EIGEN_STRONG_INLINE Packet4f print<Packet4f>(const Packet4f& a) {
 }
 template <>
 EIGEN_STRONG_INLINE Packet4f ptrunc<Packet4f>(const Packet4f& a) {
-  return __lsx_vfrint(a);
+  return __lsx_vfrintrz_s(a);
 }
 template <>
 EIGEN_STRONG_INLINE Packet4f preciprocal<Packet4f>(const Packet4f& a) {
-  return __lsx_vfrecip(a);
+  return __lsx_vfrecip_s(a);
+}
+
+template <>
+EIGEN_STRONG_INLINE Packet2d pzero(const Packet2d& /* a */) {
+  Packet2d v = {0.0, 0.0};
+  return v;
+}
+template <>
+EIGEN_STRONG_INLINE Packet2d pmin<PropagateNaN, Packet2d>(const Packet2d& a, const Packet2d& b) {
+  return pmin<Packet2d>(a, b);
+}
+template <>
+EIGEN_STRONG_INLINE Packet2d pmax<PropagateNaN, Packet2d>(const Packet2d& a, const Packet2d& b) {
+  return pmax<Packet2d>(a, b);
+}
+template <>
+EIGEN_STRONG_INLINE Packet2d psignbit(const Packet2d& a) {
+  return (__m128d)(__lsx_vsrai_d((__m128i)a, 63));
+}
+template <>
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet2d pselect(const Packet2d& mask, const Packet2d& a, const Packet2d& b) {
+  __m128i v = __lsx_vseqi_d((__m128i)mask, 0);
+  return (Packet2d)__lsx_vbitsel_v((__m128i)a, (__m128i)b, v);
+}
+template <>
+EIGEN_STRONG_INLINE Packet2d print<Packet2d>(const Packet2d& a) {
+  return __lsx_vfrintrne_d(a);
+}
+template <>
+EIGEN_STRONG_INLINE Packet2d ptrunc<Packet2d>(const Packet2d& a) {
+  return __lsx_vfrintrz_d(a);
+}
+template <>
+EIGEN_STRONG_INLINE Packet2d pldexp<Packet2d>(const Packet2d& a, const Packet2d& exponent) {
+  return pldexp_generic(a, exponent);
 }
 
 
