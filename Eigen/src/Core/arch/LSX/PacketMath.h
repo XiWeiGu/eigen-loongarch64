@@ -1866,6 +1866,11 @@ EIGEN_STRONG_INLINE Packet2d pldexp<Packet2d>(const Packet2d& a, const Packet2d&
   return pldexp_generic(a, exponent);
 }
 
+template <>
+EIGEN_STRONG_INLINE Packet16c pabsdiff<Packet16c>(const Packet16c& a, const Packet16c& b) {
+  Packet16c v = psub(a, b);
+  return pabs(v);
+}
 
 } //internal
 } //Eigen
