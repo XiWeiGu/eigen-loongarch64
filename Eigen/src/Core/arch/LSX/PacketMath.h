@@ -1891,6 +1891,11 @@ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet4i pselect(const Packet4i& mask, con
   return __lsx_vbitsel_v(b, a, mask);
 }
 
+template <>
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet2l pselect(const Packet2l& mask, const Packet2l& a, const Packet2l& b) {
+  return __lsx_vbitsel_v(b, a, mask);
+}
+
 } //internal
 } //Eigen
 #endif
