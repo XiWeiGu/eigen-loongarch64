@@ -1850,7 +1850,7 @@ EIGEN_STRONG_INLINE Packet2d psignbit(const Packet2d& a) {
 }
 template <>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet2d pselect(const Packet2d& mask, const Packet2d& a, const Packet2d& b) {
-  return (Packet2d)__lsx_vbitsel_v((__m128i)a, (__m128i)b, (__m128i)mask);
+  return (Packet2d)__lsx_vbitsel_v((__m128i)b, (__m128i)a, (__m128i)mask);
 }
 template <>
 EIGEN_STRONG_INLINE Packet2d print<Packet2d>(const Packet2d& a) {
@@ -1878,6 +1878,16 @@ EIGEN_STRONG_INLINE Packet8s pabsdiff<Packet8s>(const Packet8s& a, const Packet8
 }
 template <>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet8s pselect(const Packet8s& mask, const Packet8s& a, const Packet8s& b) {
+  return __lsx_vbitsel_v(b, a, mask);
+}
+
+template <>
+EIGEN_STRONG_INLINE Packet4i pabsdiff<Packet4i>(const Packet4i& a, const Packet4i& b) {
+  Packet4i v = psub(a, b);
+  return pabs(v);
+}
+template <>
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet4i pselect(const Packet4i& mask, const Packet4i& a, const Packet4i& b) {
   return __lsx_vbitsel_v(b, a, mask);
 }
 
