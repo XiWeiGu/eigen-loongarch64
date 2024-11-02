@@ -1896,6 +1896,33 @@ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet2l pselect(const Packet2l& mask, con
   return __lsx_vbitsel_v(b, a, mask);
 }
 
+template <>
+EIGEN_STRONG_INLINE Packet16uc pdiv<Packet16uc>(const Packet16uc& a, const Packet16uc& b) {
+    return __lsx_vdiv_bu(a, b);
+}
+template <>
+EIGEN_STRONG_INLINE Packet16uc pabsdiff<Packet16uc>(const Packet16uc& a, const Packet16uc& b) {
+  Packet16uc v = psub(a, b);
+  return pabs(v);
+}
+template <>
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet16uc pselect(const Packet16uc& mask, const Packet16uc& a,
+                                                         const Packet16uc& b) {
+  return __lsx_vbitsel_v(b, a, mask);
+}
+template <>
+EIGEN_STRONG_INLINE Packet16uc psqrt(const Packet16uc& a) {
+  __m128i res = {0, 0};
+  __m128i add = {0x8080808, 0x8080808};
+  for (int i = 0; i < 4; i++) {
+    const __m128i temp = __lsx_vor_v(res, add);
+    const __m128i tmul = __lsx_vpackev_b(__lsx_vmulwod_h_bu(temp, temp), __lsx_vmulwev_h_bu(temp, temp));
+    res = __lsx_vbitsel_v(res, temp, __lsx_vslt_bu(tmul, a));
+    add = __lsx_vsrli_b(add, 1);
+  }
+  return res;
+}
+
 } //internal
 } //Eigen
 #endif
