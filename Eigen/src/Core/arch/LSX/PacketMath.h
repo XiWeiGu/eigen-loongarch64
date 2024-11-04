@@ -1939,9 +1939,31 @@ EIGEN_STRONG_INLINE Packet8us psqrt(const Packet8us& a) {
   __m128i add = {0x0080008000800080, 0x0080008000800080};
   for (int i = 0; i < 4; i++) {
     const __m128i temp = __lsx_vor_v(res, add);
-    const __m128i tmul = __lsx_vpackev_w(__lsx_vmulwod_w_hu(temp, temp), __lsx_vmulwev_w_hu(temp, temp));
+    const __m128i tmul = __lsx_vpackev_h(__lsx_vmulwod_w_hu(temp, temp), __lsx_vmulwev_w_hu(temp, temp));
     res = __lsx_vbitsel_v(res, temp, __lsx_vsle_hu(tmul, a));
     add = __lsx_vsrli_h(add, 1);
+  }
+  return res;
+}
+
+template <>
+EIGEN_STRONG_INLINE Packet4ui pabsdiff<Packet4ui>(const Packet4ui& a, const Packet4ui& b) {
+  Packet4ui v = psub(a, b);
+  return pabs(v);
+}
+template <>
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet4ui pselect(const Packet4ui& mask, const Packet4ui& a, const Packet4ui& b) {
+  return __lsx_vbitsel_v(b, a, mask);
+}
+template <>
+EIGEN_STRONG_INLINE Packet4ui psqrt(const Packet4ui& a) {
+  __m128i res = {0, 0};
+  __m128i add = {0x0000800000008000, 0x0000800000008000};
+  for (int i = 0; i < 4; i++) {
+    const __m128i temp = __lsx_vor_v(res, add);
+    const __m128i tmul = __lsx_vpackev_w(__lsx_vmulwod_d_wu(temp, temp), __lsx_vmulwev_d_wu(temp, temp));
+    res = __lsx_vbitsel_v(res, temp, __lsx_vsle_wu(tmul, a));
+    add = __lsx_vsrli_w(add, 1);
   }
   return res;
 }
