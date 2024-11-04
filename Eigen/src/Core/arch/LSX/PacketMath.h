@@ -1968,6 +1968,11 @@ EIGEN_STRONG_INLINE Packet4ui psqrt(const Packet4ui& a) {
   return res;
 }
 
+template <>
+EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet2ul pselect(const Packet2ul& mask, const Packet2ul& a, const Packet2ul& b) {
+  return __lsx_vbitsel_v(b, a, mask);
+}
+
 } //internal
 } //Eigen
 #endif
