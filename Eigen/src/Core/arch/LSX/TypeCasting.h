@@ -16,6 +16,31 @@
 namespace Eigen {
 
 namespace internal {
+
+//==============================================================================
+// preinterpret
+//==============================================================================
+template <>
+EIGEN_STRONG_INLINE Packet4f preinterpret<Packet4f, Packet4i>(const Packet4i& a) {
+  return (__m128)((__m128i)a);;
+}
+template <>
+EIGEN_STRONG_INLINE Packet4f preinterpret<Packet4f, Packet4ui>(const Packet4ui& a) {
+  return (__m128)((__m128i)a);;
+}
+template <>
+EIGEN_STRONG_INLINE Packet2d preinterpret<Packet2d, Packet2l>(const Packet2l& a) {
+  return (__m128d)((__m128i)a);;
+}
+template <>
+EIGEN_STRONG_INLINE Packet2d preinterpret<Packet2d, Packet2ul>(const Packet2ul& a) {
+  return (__m128d)((__m128i)a);;
+}
+template <>
+EIGEN_STRONG_INLINE Packet2d preinterpret<Packet2d, Packet4i>(const Packet4i& a) {
+  return (__m128d)((__m128i)a);;
+}
+
 template <>
 EIGEN_STRONG_INLINE Packet2l pcast<Packet4f, Packet2l>(const Packet4f& a) {
   Packet2d tmp = __lsx_vfcvtl_d_s(a);
