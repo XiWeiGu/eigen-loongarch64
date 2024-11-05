@@ -2,6 +2,7 @@
 // for linear algebra.
 //
 // Copyright (C) 2023 Zang Ruochen <zangruochen@loongson.cn>
+// Copyright (C) 2024 XiWei Gu <guxiwei-hf@loongson.cn>
 //
 // This Source Code Form is subject to the terms of the Mozilla
 // Public License v. 2.0. If a copy of the MPL was not distributed
@@ -22,23 +23,75 @@ namespace internal {
 //==============================================================================
 template <>
 EIGEN_STRONG_INLINE Packet4f preinterpret<Packet4f, Packet4i>(const Packet4i& a) {
-  return (__m128)((__m128i)a);;
+  return (__m128)((__m128i)a);
 }
 template <>
 EIGEN_STRONG_INLINE Packet4f preinterpret<Packet4f, Packet4ui>(const Packet4ui& a) {
-  return (__m128)((__m128i)a);;
+  return (__m128)((__m128i)a);
 }
 template <>
 EIGEN_STRONG_INLINE Packet2d preinterpret<Packet2d, Packet2l>(const Packet2l& a) {
-  return (__m128d)((__m128i)a);;
+  return (__m128d)((__m128i)a);
 }
 template <>
 EIGEN_STRONG_INLINE Packet2d preinterpret<Packet2d, Packet2ul>(const Packet2ul& a) {
-  return (__m128d)((__m128i)a);;
+  return (__m128d)((__m128i)a);
 }
 template <>
 EIGEN_STRONG_INLINE Packet2d preinterpret<Packet2d, Packet4i>(const Packet4i& a) {
-  return (__m128d)((__m128i)a);;
+  return (__m128d)((__m128i)a);
+}
+template <>
+EIGEN_STRONG_INLINE Packet16c preinterpret<Packet16c, Packet16uc>(const Packet16uc& a) {
+  return (__m128i)a;
+}
+template <>
+EIGEN_STRONG_INLINE Packet8s preinterpret<Packet8s, Packet8us>(const Packet8us& a) {
+  return (__m128i)a;
+}
+template <>
+EIGEN_STRONG_INLINE Packet4i preinterpret<Packet4i, Packet4f>(const Packet4f& a) {
+  return (__m128i)a;
+}
+template <>
+EIGEN_STRONG_INLINE Packet4i preinterpret<Packet4i, Packet4ui>(const Packet4ui& a) {
+  return (__m128i)a;
+}
+template <>
+EIGEN_STRONG_INLINE Packet4i preinterpret<Packet4i, Packet2d>(const Packet2d& a) {
+  return (__m128i)a;
+}
+template <>
+EIGEN_STRONG_INLINE Packet2l preinterpret<Packet2l, Packet2d>(const Packet2d& a) {
+  return (__m128i)a;
+}
+template <>
+EIGEN_STRONG_INLINE Packet2l preinterpret<Packet2l, Packet2ul>(const Packet2ul& a) {
+  return (__m128i)a;
+}
+template <>
+EIGEN_STRONG_INLINE Packet16uc preinterpret<Packet16uc, Packet16c>(const Packet16c& a) {
+  return (__m128i)a;
+}
+template <>
+EIGEN_STRONG_INLINE Packet8us preinterpret<Packet8us, Packet8s>(const Packet8s& a) {
+  return (__m128i)a;
+}
+template <>
+EIGEN_STRONG_INLINE Packet4ui preinterpret<Packet4ui, Packet4f>(const Packet4f& a) {
+  return (__m128i)a;
+}
+template <>
+EIGEN_STRONG_INLINE Packet4ui preinterpret<Packet4ui, Packet4i>(const Packet4i& a) {
+  return (__m128i)a;
+}
+template <>
+EIGEN_STRONG_INLINE Packet2ul preinterpret<Packet2ul, Packet2d>(const Packet2d& a) {
+  return (__m128i)a;
+}
+template <>
+EIGEN_STRONG_INLINE Packet2ul preinterpret<Packet2ul, Packet2l>(const Packet2l& a) {
+  return (__m128i)a;
 }
 
 template <>
