@@ -205,8 +205,9 @@ EIGEN_STRONG_INLINE Packet2cf plog<Packet2cf>(const Packet2cf& a) {
 }
 
 template <>
-EIGEN_STRONG_INLINE Packet2cf pzero(const Packet2cf& a) {
-  return Packet2cf(__lsx_vfsub_s(a.v, a.v));
+EIGEN_STRONG_INLINE Packet2cf pzero(const Packet2cf& /* a */) {
+  __m128 v = {0.0f, 0.0f, 0.0f, 0.0f};
+  return (Packet2cf)v;
 }
 
 template <>
@@ -415,8 +416,9 @@ EIGEN_STRONG_INLINE Packet1cd plog<Packet1cd>(const Packet1cd& a) {
 }
 
 template <>
-EIGEN_STRONG_INLINE Packet1cd pzero<Packet1cd>(const Packet1cd& a) {
-  return Packet1cd(__lsx_vfsub_d(a.v, a.v));
+EIGEN_STRONG_INLINE Packet1cd pzero<Packet1cd>(const Packet1cd& /* a */) {
+  __m128d v = {0.0, 0.0};
+  return (Packet1cd)v;
 }
 
 template <>
