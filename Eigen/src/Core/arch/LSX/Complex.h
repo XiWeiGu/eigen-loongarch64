@@ -439,16 +439,15 @@ template <>
 EIGEN_DEVICE_FUNC inline Packet1cd pgather<std::complex<double>, Packet1cd>(const std::complex<double>* from,
                                                                             Index /* stride */) {
   Packet1cd res;
-  double real1 = from[0].real(), imag1 = from[0].imag();
-  Packet2d tmp = {real1, imag1};
-  res.v = tmp;
+  __m128i tmp = __lsx_vld((void*)from, 0);
+  res.v = (__m128d)tmp;
   return res;
 }
 
 template <>
 EIGEN_DEVICE_FUNC inline void pscatter<std::complex<double>, Packet1cd>(std::complex<double>* to, const Packet1cd& from,
                                                                         Index /* stride */) {
-  *to = std::complex<double>(from.v[0], from.v[1]);
+  __lsx_vst( (__m128i)from.v, (void*)to, 0);
 }
 
 EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet1cd, 2>& kernel) {
