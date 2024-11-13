@@ -147,18 +147,17 @@ template<> EIGEN_STRONG_INLINE void pstoreu<std::complex<float> >(std::complex<f
 template<> EIGEN_DEVICE_FUNC inline Packet2cf pgather<std::complex<float>, Packet2cf>(const std::complex<float>* from, Index stride)
 {
   Packet2cf res;
-  float real1 = from[0].real(), imag1 = from[0].imag();
-  float real2 = from[stride].real(), imag2 = from[stride].imag();
-  Packet4f tmp = {real1, imag1, real2, imag2};
-  res.v = tmp;
+  __m128i tmp  = __lsx_vldrepl_d(from, 0);
+  __m128i tmp1 = __lsx_vldrepl_d(from + stride, 0);
+  tmp = __lsx_vilvl_d(tmp1, tmp);
+  res.v = (__m128)tmp;
   return res;
 }
 
 template<> EIGEN_DEVICE_FUNC inline void pscatter<std::complex<float>, Packet2cf>(std::complex<float>* to, const Packet2cf& from, Index stride)
 {
-  *to = std::complex<float>(from.v[0], from.v[1]);
-  to += stride;
-  *to = std::complex<float>(from.v[2], from.v[3]);
+  __lsx_vstelm_d((__m128i)from.v, to, 0, 0);
+  __lsx_vstelm_d((__m128i)from.v, to + stride, 0, 1);
 }
 
 template<> EIGEN_STRONG_INLINE void prefetch<std::complex<float> >(const std::complex<float> *   addr) { __builtin_prefetch(addr); }
