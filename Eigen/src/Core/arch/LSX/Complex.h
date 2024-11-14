@@ -212,7 +212,7 @@ EIGEN_STRONG_INLINE Packet2cf pzero(const Packet2cf& /* a */) {
 template <>
 EIGEN_STRONG_INLINE Packet2cf pmadd<Packet2cf>(const Packet2cf& a, const Packet2cf& b, const Packet2cf& c) {
   Packet2cf result, t0, t1, t2;
-  pzero(t1);
+  t1 = pzero(t1);
   t0.v = (__m128)__lsx_vpackev_w((__m128i)a.v, (__m128i)a.v);
   t2.v = __lsx_vfmadd_s(t0.v, b.v, c.v);
   result.v = __lsx_vfadd_s(t2.v, t1.v);
@@ -423,7 +423,7 @@ EIGEN_STRONG_INLINE Packet1cd pzero<Packet1cd>(const Packet1cd& /* a */) {
 template <>
 EIGEN_STRONG_INLINE Packet1cd pmadd<Packet1cd>(const Packet1cd& a, const Packet1cd& b, const Packet1cd& c) {
   Packet1cd result, t0, t1, t2;
-  pzero(t1);
+  t1 = pzero(t1);
   t0.v = (__m128d)__lsx_vpackev_d((__m128i)a.v, (__m128i)a.v);
   t2.v = __lsx_vfmadd_d(t0.v, b.v, c.v);
   result.v = __lsx_vfadd_d(t2.v, t1.v);
