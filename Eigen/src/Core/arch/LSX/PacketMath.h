@@ -870,24 +870,18 @@ template<> EIGEN_STRONG_INLINE void pstoreu<uint64_t>(uint64_t* to, const Packet
 
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet4f pgather<float, Packet4f>(const float* from, Index stride) {
-  float f = *from;
-  Packet4f v = { f, f, f, f };
-  v[1] = from[stride];
-  v[2] = from[2 * stride];
-  v[3] = from[3 * stride];
+  Packet4f v = { from[0], from[stride], from[2 * stride], from[3 * stride] };
   return v;
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet2d pgather<double, Packet2d>(const double* from, Index stride) {
-  double f = *from;
-  Packet2d v = { f, f };
-  v[1] = from[stride];
+  Packet2d v = { from[0], from[stride] };
   return v;
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet16c pgather<int8_t, Packet16c>(const int8_t* from, Index stride) {
-  int8_t i = *from;
-  int8_t v[] = { i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i };
+  int8_t v[16] __attribute__((aligned(16)));
+  v[0] = from[0];
   v[1] = from[stride];
   v[2] = from[2 * stride];
   v[3] = from[3 * stride];
@@ -907,8 +901,8 @@ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet16c pgather<int8_t, Packet16c>(const
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet8s pgather<int16_t, Packet8s>(const int16_t* from, Index stride) {
-  int16_t i = *from;
-  int16_t v[] = { i, i, i, i, i, i, i, i };
+  int16_t v[8] __attribute__((aligned(16)));
+  v[0] = from[0];
   v[1] = from[stride];
   v[2] = from[2 * stride];
   v[3] = from[3 * stride];
@@ -920,8 +914,8 @@ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet8s pgather<int16_t, Packet8s>(const 
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet4i pgather<int32_t, Packet4i>(const int32_t* from, Index stride) {
-  int32_t i = *from;
-  int32_t v[] = { i, i, i, i };
+  int32_t v[4] __attribute__((aligned(16)));
+  v[0] = from[0];
   v[1] = from[stride];
   v[2] = from[2 * stride];
   v[3] = from[3 * stride];
@@ -929,15 +923,15 @@ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet4i pgather<int32_t, Packet4i>(const 
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet2l pgather<int64_t, Packet2l>(const int64_t* from, Index stride) {
-  int64_t i = *from;
-  int64_t v[] = { i, i };
+  int64_t v[2] __attribute__((aligned(16)));
+  v[0] = from[0];
   v[1] = from[stride];
   return __lsx_vld(v, 0);
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet16uc pgather<uint8_t, Packet16uc>(const uint8_t* from, Index stride) {
-  uint8_t i = *from;
-  uint8_t v[] = { i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i };
+  uint8_t v[16] __attribute__((aligned(16)));
+  v[0] = from[0];
   v[1] = from[stride];
   v[2] = from[2 * stride];
   v[3] = from[3 * stride];
@@ -957,8 +951,8 @@ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet16uc pgather<uint8_t, Packet16uc>(co
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet8us pgather<uint16_t, Packet8us>(const uint16_t* from, Index stride) {
-  uint16_t i = *from;
-  uint16_t v[] = { i, i, i, i, i, i, i, i };
+  uint16_t v[8] __attribute__((aligned(16)));
+  v[0] = from[0];
   v[1] = from[stride];
   v[2] = from[2 * stride];
   v[3] = from[3 * stride];
@@ -970,8 +964,8 @@ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet8us pgather<uint16_t, Packet8us>(con
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet4ui pgather<uint32_t, Packet4ui>(const uint32_t* from, Index stride) {
-  uint32_t i = *from;
-  uint32_t v[] = { i, i, i, i };
+  uint32_t v[4] __attribute__((aligned(16)));
+  v[0] = from[0];
   v[1] = from[stride];
   v[2] = from[2 * stride];
   v[3] = from[3 * stride];
@@ -979,8 +973,8 @@ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet4ui pgather<uint32_t, Packet4ui>(con
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet2ul pgather<uint64_t, Packet2ul>(const uint64_t* from, Index stride) {
-  uint64_t i = *from;
-  uint64_t v[] = { i, i };
+  uint64_t v[2] __attribute__((aligned(16)));
+  v[0] = from[0];
   v[1] = from[stride];
   return __lsx_vld(v, 0);
 }
