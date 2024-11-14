@@ -981,103 +981,99 @@ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Packet2ul pgather<uint64_t, Packet2ul>(con
 
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<float, Packet4f>(float* to, const Packet4f& from, Index stride) {
-  *to = from[0];
-  to += stride;
-  *to = from[1];
-  to += stride;
-  *to = from[2];
-  to += stride;
-  *to = from[3];
+  __lsx_vstelm_w(from, to, 0, 0);
+  __lsx_vstelm_w(from, to + stride * 1, 0, 1);
+  __lsx_vstelm_w(from, to + stride * 2, 0, 2);
+  __lsx_vstelm_w(from, to + stride * 3, 0, 3);
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<double, Packet2d>(double* to, const Packet2d& from, Index stride) {
-  *to = from[0];
-  to += stride;
-  *to = from[1];
+  __lsx_vstelm_d(from, to, 0, 0);
+  __lsx_vstelm_d(from, to + stride, 0, 1);
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<int8_t, Packet16c>(int8_t* to, const Packet16c& from, Index stride) {
-  to[stride*0] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 0);
-  to[stride*1] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 1);
-  to[stride*2] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 2);
-  to[stride*3] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 3);
-  to[stride*4] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 4);
-  to[stride*5] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 5);
-  to[stride*6] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 6);
-  to[stride*7] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 7);
-  to[stride*8] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 8);
-  to[stride*9] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 9);
-  to[stride*10] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 10);
-  to[stride*11] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 11);
-  to[stride*12] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 12);
-  to[stride*13] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 13);
-  to[stride*14] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 14);
-  to[stride*15] = (int8_t)__lsx_vpickve2gr_b((__m128i)from, 15);
+  __lsx_vstelm_b((__m128i)from, to, 0, 0);
+  __lsx_vstelm_b((__m128i)from, to + stride * 1, 0, 1);
+  __lsx_vstelm_b((__m128i)from, to + stride * 2, 0, 2);
+  __lsx_vstelm_b((__m128i)from, to + stride * 3, 0, 3);
+  __lsx_vstelm_b((__m128i)from, to + stride * 4, 0, 4);
+  __lsx_vstelm_b((__m128i)from, to + stride * 5, 0, 5);
+  __lsx_vstelm_b((__m128i)from, to + stride * 6, 0, 6);
+  __lsx_vstelm_b((__m128i)from, to + stride * 7, 0, 7);
+  __lsx_vstelm_b((__m128i)from, to + stride * 8, 0, 8);
+  __lsx_vstelm_b((__m128i)from, to + stride * 9, 0, 9);
+  __lsx_vstelm_b((__m128i)from, to + stride * 10, 0, 10);
+  __lsx_vstelm_b((__m128i)from, to + stride * 11, 0, 11);
+  __lsx_vstelm_b((__m128i)from, to + stride * 12, 0, 12);
+  __lsx_vstelm_b((__m128i)from, to + stride * 13, 0, 13);
+  __lsx_vstelm_b((__m128i)from, to + stride * 14, 0, 14);
+  __lsx_vstelm_b((__m128i)from, to + stride * 15, 0, 15);
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<int16_t, Packet8s>(int16_t* to, const Packet8s& from, Index stride) {
-  to[stride*0] = (int16_t)__lsx_vpickve2gr_h((__m128i)from, 0);
-  to[stride*1] = (int16_t)__lsx_vpickve2gr_h((__m128i)from, 1);
-  to[stride*2] = (int16_t)__lsx_vpickve2gr_h((__m128i)from, 2);
-  to[stride*3] = (int16_t)__lsx_vpickve2gr_h((__m128i)from, 3);
-  to[stride*4] = (int16_t)__lsx_vpickve2gr_h((__m128i)from, 4);
-  to[stride*5] = (int16_t)__lsx_vpickve2gr_h((__m128i)from, 5);
-  to[stride*6] = (int16_t)__lsx_vpickve2gr_h((__m128i)from, 6);
-  to[stride*7] = (int16_t)__lsx_vpickve2gr_h((__m128i)from, 7);
+  __lsx_vstelm_h((__m128i)from, to, 0, 0);
+  __lsx_vstelm_h((__m128i)from, to + stride * 1, 0, 1);
+  __lsx_vstelm_h((__m128i)from, to + stride * 2, 0, 2);
+  __lsx_vstelm_h((__m128i)from, to + stride * 3, 0, 3);
+  __lsx_vstelm_h((__m128i)from, to + stride * 4, 0, 4);
+  __lsx_vstelm_h((__m128i)from, to + stride * 5, 0, 5);
+  __lsx_vstelm_h((__m128i)from, to + stride * 6, 0, 6);
+  __lsx_vstelm_h((__m128i)from, to + stride * 7, 0, 7);
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<int32_t, Packet4i>(int32_t* to, const Packet4i& from, Index stride) {
-  to[stride*0] = (int32_t)__lsx_vpickve2gr_w((__m128i)from, 0);
-  to[stride*1] = (int32_t)__lsx_vpickve2gr_w((__m128i)from, 1);
-  to[stride*2] = (int32_t)__lsx_vpickve2gr_w((__m128i)from, 2);
-  to[stride*3] = (int32_t)__lsx_vpickve2gr_w((__m128i)from, 3);
+  __lsx_vstelm_w((__m128i)from, to, 0, 0);
+  __lsx_vstelm_w((__m128i)from, to + stride * 1, 0, 1);
+  __lsx_vstelm_w((__m128i)from, to + stride * 2, 0, 2);
+  __lsx_vstelm_w((__m128i)from, to + stride * 3, 0, 3);
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<int64_t, Packet2l>(int64_t* to, const Packet2l& from, Index stride) {
-  to[stride*0] = (int64_t)__lsx_vpickve2gr_d((__m128i)from, 0);
-  to[stride*1] = (int64_t)__lsx_vpickve2gr_d((__m128i)from, 1);
+  __lsx_vstelm_d((__m128i)from, to, 0, 0);
+  __lsx_vstelm_d((__m128i)from, to + stride * 1, 0, 1);
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<uint8_t, Packet16uc>(uint8_t* to, const Packet16uc& from, Index stride) {
-  to[stride*0] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 0);
-  to[stride*1] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 1);
-  to[stride*2] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 2);
-  to[stride*3] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 3);
-  to[stride*4] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 4);
-  to[stride*5] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 5);
-  to[stride*6] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 6);
-  to[stride*7] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 7);
-  to[stride*8] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 8);
-  to[stride*9] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 9);
-  to[stride*10] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 10);
-  to[stride*11] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 11);
-  to[stride*12] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 12);
-  to[stride*13] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 13);
-  to[stride*14] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 14);
-  to[stride*15] = (uint8_t)__lsx_vpickve2gr_b((__m128i)from, 15);
+  __lsx_vstelm_b((__m128i)from, to, 0, 0);
+  __lsx_vstelm_b((__m128i)from, to + stride * 1, 0, 1);
+  __lsx_vstelm_b((__m128i)from, to + stride * 2, 0, 2);
+  __lsx_vstelm_b((__m128i)from, to + stride * 3, 0, 3);
+  __lsx_vstelm_b((__m128i)from, to + stride * 4, 0, 4);
+  __lsx_vstelm_b((__m128i)from, to + stride * 5, 0, 5);
+  __lsx_vstelm_b((__m128i)from, to + stride * 6, 0, 6);
+  __lsx_vstelm_b((__m128i)from, to + stride * 7, 0, 7);
+  __lsx_vstelm_b((__m128i)from, to + stride * 8, 0, 8);
+  __lsx_vstelm_b((__m128i)from, to + stride * 9, 0, 9);
+  __lsx_vstelm_b((__m128i)from, to + stride * 10, 0, 10);
+  __lsx_vstelm_b((__m128i)from, to + stride * 11, 0, 11);
+  __lsx_vstelm_b((__m128i)from, to + stride * 12, 0, 12);
+  __lsx_vstelm_b((__m128i)from, to + stride * 13, 0, 13);
+  __lsx_vstelm_b((__m128i)from, to + stride * 14, 0, 14);
+  __lsx_vstelm_b((__m128i)from, to + stride * 15, 0, 15);
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<uint16_t, Packet8us>(uint16_t* to, const Packet8us& from, Index stride) {
-  to[stride*0] = (uint16_t)__lsx_vpickve2gr_h((__m128i)from, 0);
-  to[stride*1] = (uint16_t)__lsx_vpickve2gr_h((__m128i)from, 1);
-  to[stride*2] = (uint16_t)__lsx_vpickve2gr_h((__m128i)from, 2);
-  to[stride*3] = (uint16_t)__lsx_vpickve2gr_h((__m128i)from, 3);
-  to[stride*4] = (uint16_t)__lsx_vpickve2gr_h((__m128i)from, 4);
-  to[stride*5] = (uint16_t)__lsx_vpickve2gr_h((__m128i)from, 5);
-  to[stride*6] = (uint16_t)__lsx_vpickve2gr_h((__m128i)from, 6);
-  to[stride*7] = (uint16_t)__lsx_vpickve2gr_h((__m128i)from, 7);
+  __lsx_vstelm_h((__m128i)from, to, 0, 0);
+  __lsx_vstelm_h((__m128i)from, to + stride * 1, 0, 1);
+  __lsx_vstelm_h((__m128i)from, to + stride * 2, 0, 2);
+  __lsx_vstelm_h((__m128i)from, to + stride * 3, 0, 3);
+  __lsx_vstelm_h((__m128i)from, to + stride * 4, 0, 4);
+  __lsx_vstelm_h((__m128i)from, to + stride * 5, 0, 5);
+  __lsx_vstelm_h((__m128i)from, to + stride * 6, 0, 6);
+  __lsx_vstelm_h((__m128i)from, to + stride * 7, 0, 7);
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<uint32_t, Packet4ui>(uint32_t* to, const Packet4ui& from, Index stride) {
-  to[stride*0] = (uint32_t)__lsx_vpickve2gr_w((__m128i)from, 0);
-  to[stride*1] = (uint32_t)__lsx_vpickve2gr_w((__m128i)from, 1);
-  to[stride*2] = (uint32_t)__lsx_vpickve2gr_w((__m128i)from, 2);
-  to[stride*3] = (uint32_t)__lsx_vpickve2gr_w((__m128i)from, 3);
+  __lsx_vstelm_w((__m128i)from, to, 0, 0);
+  __lsx_vstelm_w((__m128i)from, to + stride * 1, 0, 1);
+  __lsx_vstelm_w((__m128i)from, to + stride * 2, 0, 2);
+  __lsx_vstelm_w((__m128i)from, to + stride * 3, 0, 3);
 }
 template<>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE void pscatter<uint64_t, Packet2ul>(uint64_t* to, const Packet2ul& from, Index stride) {
-  to[stride*0] = (uint64_t)__lsx_vpickve2gr_d((__m128i)from, 0);
-  to[stride*1] = (uint64_t)__lsx_vpickve2gr_d((__m128i)from, 1);
+  __lsx_vstelm_d((__m128i)from, to, 0, 0);
+  __lsx_vstelm_d((__m128i)from, to + stride * 1, 0, 1);
 }
 
 template<> EIGEN_STRONG_INLINE void prefetch<float>(const float* addr) { __builtin_prefetch(addr); }
