@@ -69,10 +69,8 @@ template<> EIGEN_STRONG_INLINE Packet2cf psub<Packet2cf>(const Packet2cf& a, con
 
 template<> EIGEN_STRONG_INLINE Packet2cf pnegate(const Packet2cf& a)
 {
-  const uint32_t b[4]= {0x80000000u,0x80000000u,0x80000000u,0x80000000u};
-  Packet4i mask = (Packet4i)__lsx_vld(b,0);
   Packet2cf res;
-  res.v=(Packet4f)__lsx_vxor_v((__m128i)a.v,mask);
+  res.v = (Packet4f)__lsx_vbitrevi_w((__m128i)a.v, 31);
   return res;
 }
 
@@ -132,10 +130,8 @@ template<> EIGEN_STRONG_INLINE Packet2cf ploadu<Packet2cf> (const std::complex<f
 
 template<> EIGEN_STRONG_INLINE Packet2cf pset1<Packet2cf>(const std::complex<float>&  from)
 {
-  float f0 = from.real(), f1 = from.imag();
-  Packet4f re = {f0, f0, f0, f0};
-  Packet4f im = {f1, f1, f1, f1};
-  return Packet2cf((Packet4f)__lsx_vilvl_w((__m128i)im, (__m128i)re));
+  __m128i t = __lsx_vldrepl_d(&from, 0);
+  return Packet2cf((Packet4f)t);
 }
 
 template<> EIGEN_STRONG_INLINE Packet2cf ploaddup<Packet2cf>(const std::complex<float>* from) { return pset1<Packet2cf>(*from); }
@@ -164,9 +160,7 @@ template<> EIGEN_STRONG_INLINE void prefetch<std::complex<float> >(const std::co
 
 template<> EIGEN_STRONG_INLINE std::complex<float> pfirst<Packet2cf>(const Packet2cf& a)
 {
-  EIGEN_ALIGN16 std::complex<float> res[2];
-  __lsx_vst(a.v, res, 0);
-  return res[0];
+  return std::complex<float>((a.v)[0], (a.v)[1]);
 }
 
 template<> EIGEN_STRONG_INLINE Packet2cf preverse(const Packet2cf& a)
@@ -301,27 +295,27 @@ template<> EIGEN_STRONG_INLINE Packet1cd pmul<Packet1cd>(const Packet1cd& a, con
 template<> EIGEN_STRONG_INLINE Packet1cd ptrue  <Packet1cd>(const Packet1cd& a) { return Packet1cd(ptrue(Packet2d(a.v))); }
 template<> EIGEN_STRONG_INLINE Packet1cd pand   <Packet1cd>(const Packet1cd& a, const Packet1cd& b)
 {
-	Packet1cd res;
-	res.v = (Packet2d)__lsx_vand_v((__m128i)a.v, (__m128i)b.v);
-	return res;
+  Packet1cd res;
+  res.v = (Packet2d)__lsx_vand_v((__m128i)a.v, (__m128i)b.v);
+  return res;
 }
 template<> EIGEN_STRONG_INLINE Packet1cd por    <Packet1cd>(const Packet1cd& a, const Packet1cd& b)
 {
-	Packet1cd res;
-	res.v = (Packet2d)__lsx_vor_v((__m128i)a.v,(__m128i)b.v);
-	return res;
+  Packet1cd res;
+  res.v = (Packet2d)__lsx_vor_v((__m128i)a.v,(__m128i)b.v);
+  return res;
 }
 template<> EIGEN_STRONG_INLINE Packet1cd pxor   <Packet1cd>(const Packet1cd& a, const Packet1cd& b)
 {
-       Packet1cd res;
-       res.v = (Packet2d)__lsx_vxor_v((__m128i)a.v,(__m128i)b.v);
-       return res;
+  Packet1cd res;
+  res.v = (Packet2d)__lsx_vxor_v((__m128i)a.v,(__m128i)b.v);
+  return res;
 }
 template<> EIGEN_STRONG_INLINE Packet1cd pandnot<Packet1cd>(const Packet1cd& a, const Packet1cd& b)
 {
-	Packet1cd res;
-	res.v = (Packet2d)__lsx_vandn_v((__m128i)b.v,(__m128i)a.v);
-	return res;
+  Packet1cd res;
+  res.v = (Packet2d)__lsx_vandn_v((__m128i)b.v,(__m128i)a.v);
+  return res;
 }
 
 // FIXME force unaligned load, this is a temporary fix
@@ -342,14 +336,12 @@ template<> EIGEN_STRONG_INLINE void prefetch<std::complex<double> >(const std::c
 
 template<> EIGEN_STRONG_INLINE std::complex<double>  pfirst<Packet1cd>(const Packet1cd& a)
 {
-  EIGEN_ALIGN16 double res[2];
-  __lsx_vst(a.v, res, 0);
-  return std::complex<double>(res[0],res[1]);
+  return std::complex<double>((a.v)[0], (a.v)[1]);
 }
 
 template<> EIGEN_STRONG_INLINE Packet1cd preverse(const Packet1cd& a)
 {
-	return a;
+  return a;
 }
 
 template<> EIGEN_STRONG_INLINE std::complex<double> predux<Packet1cd>(const Packet1cd& a)
@@ -438,7 +430,7 @@ template <>
 EIGEN_DEVICE_FUNC inline Packet1cd pgather<std::complex<double>, Packet1cd>(const std::complex<double>* from,
                                                                             Index /* stride */) {
   Packet1cd res;
-  __m128i tmp = __lsx_vld((void*)from, 0);
+  __m128i tmp = __lsx_vld(from, 0);
   res.v = (__m128d)tmp;
   return res;
 }
@@ -446,7 +438,7 @@ EIGEN_DEVICE_FUNC inline Packet1cd pgather<std::complex<double>, Packet1cd>(cons
 template <>
 EIGEN_DEVICE_FUNC inline void pscatter<std::complex<double>, Packet1cd>(std::complex<double>* to, const Packet1cd& from,
                                                                         Index /* stride */) {
-  __lsx_vst( (__m128i)from.v, (void*)to, 0);
+  __lsx_vst((__m128i)from.v, to, 0);
 }
 
 EIGEN_STRONG_INLINE void ptranspose(PacketBlock<Packet1cd, 2>& kernel) {
